@@ -18,74 +18,122 @@ import matplotlib.pyplot as plt
 #                                                                              #
 ################################################################################
 
+def projD(x0):
+    # line equation
+    a, b, c = 1, 1, -1
+    x = np.zeros(2)
+
+    # point on the line ax + by + c = 0 with the shortest distance ie the projection
+    num = b*(b*x0[0] - a*x0[1]) - a*c
+    denom = a**2 + b**2
+    x[0] = num / denom
+
+    num = a*(-b*x0[0] + a*x0[1]) - b*c
+    x[1] = num / denom
+
+    return x
+
+
+def projC(y0):
+    # Projection onto the euclidean norm ball
+    # Check example A.5
+    # quickly:
+    #   projC(x) = x / max(1, l2norm(x))
+
+    # numpy probably has an l2 norm function but lets be cool and do it ourselves
+    l2norm = np.sqrt(sum([y**2 for y in y0]))
+
+    return y0 / max(1, l2norm)
+
+
+def combinedRes(x, y):
+    dRes = abs(x[0] + x[1] - 1)
+    cRes = abs(y[0] ** 2 + y[1] ** 2 - 1)
+
+    print("dRes:", dRes)
+    print("cRes:", cRes)
+
+#    return dRes + cRes
+    return 999
+
 
 # Alternating projection method
 def POCS(x0, tol, maxiter, check):
-    
     # initialization
-    x = x0.copy();
-    y = x.copy();
+    x = x0.copy()
+    y = x.copy()
+    res = tol
 
     # taping
-    seq = [x0];
+    seq = [x0]
 
     for iter in np.arange(0, maxiter):
-       
+
         ###########################################################################
         ### TODO: Perform the update step of the Alternating Projection Method. ###
         # Denote the points on $C$ by $y$ and the points on $D$ by $x$. Append
         # $y$ and $x$ to the list 'seq'. 
         # Implement an appropriate breaking condition. Define an appropriate
         # residual and break the loop if res<tol.
-	#
-	# WRITE YOUR SOLUTION HERE
-	#
+
+        x = projD(seq[-1])
+        seq.append(x)
+
+        y = projC(x)
+        seq.append(y)
+
+        res = combinedRes(x, y)
+
+        if res < tol:
+            print("Stopped iteration since res < tol")
+            print("\tres: {}, tol: {}".format(res, tol))
+            break
+
         ###########################################################################
 
         # provide some information
         if iter % check == 0:
-            print ('Iter: %d, res: %f' % (iter, res));
-    
-    return seq;
+            print('Iter: %d, res: %f' % (iter, res))
+
+    return seq
 
 
 # Dykstra's projection method
 def Dykstra(x0, tol, maxiter, check):
-    
     # initialization
-    x = x0.copy();
-    y = x.copy();
-    p = np.zeros(x.shape);
-    q = np.zeros(x.shape);
+    x = x0.copy()
+    y = x.copy()
+    p = np.zeros(x.shape)
+    q = np.zeros(x.shape)
 
     # taping
-    seq = [x0];
+    seq = [x0]
 
     for iter in np.arange(0, maxiter):
-        
+
         ###########################################################################
         ### TODO: Perform the update step of the Dykstra's  Projection Method.  ###
         # Denote the points on $C$ by $y$ and the points on $D$ by $x$. Append
         # $y$ and $x$ to the list 'seq'. 
         # Implement an appropriate breaking condition. Define an appropriate
         # residual and break the loop if res<tol.
-	#
-	# WRITE YOUR SOLUTION HERE
-	#
+        #
+        # WRITE YOUR SOLUTION HERE
+        #
         ###########################################################################
 
         # provide some information
         if iter % check == 0:
-            print ('Iter: %d, res: %f' % (iter, res));
-    
-    return seq;
+            print('Iter: %d, res: %f' % (iter, res))
+
+    return seq
 
 
 ### Run the algorithms ###
-x0 = np.array([1.25,-2]);
-tol = 1e-10;
-maxiter = 100;
-check = 10;
+x0 = np.array([1.25, -2])
+tol = 1e-10
+maxiter = 100
+check = 10
 
 ###################################################################################
 ### TODO: Find an initialization x0 for which POCS and Dykstra's Algorithm converge 
@@ -95,45 +143,46 @@ check = 10;
 #
 ###################################################################################
 
+# %%
 
 # run the POCS algorithm (Alternating Projection Method)
-seq_POCS = POCS(x0, tol, maxiter, check);
-arr_POCS = np.vstack(seq_POCS).T;
+seq_POCS = POCS(x0, tol, maxiter, check)
+arr_POCS = np.vstack(seq_POCS).T
+
+# %%
 
 # run Dykstra Projection Algorithm
-seq_Dykstra = Dykstra(x0, tol, maxiter, check);
-arr_Dykstra = np.vstack(seq_Dykstra).T;
+seq_Dykstra = Dykstra(x0, tol, maxiter, check)
+arr_Dykstra = np.vstack(seq_Dykstra).T
 
+# %%
 
 ### visualize the result:
-fig = plt.figure();
-plt.subplot(1,2,1);
+fig = plt.figure()
+plt.subplot(1, 2, 1)
 plt.axis('equal')
 # draw a part of the set D
-plt.plot([2,-1],[-1,2],color=(0,0,0,1),linewidth=2);
+plt.plot([2, -1], [-1, 2], color=(0, 0, 0, 1), linewidth=2)
 # draw the boundary of the set C
-an = np.linspace(0, 2*np.pi, 100)
-plt.plot(np.cos(an), np.sin(an),color=(0,0,0,1),linewidth=1);
+an = np.linspace(0, 2 * np.pi, 100)
+plt.plot(np.cos(an), np.sin(an), color=(0, 0, 0, 1), linewidth=1)
 # visualize iterates of POCS
-plt.plot(arr_POCS[0,:], arr_POCS[1,:], '-x', color=(1,0,0,1),linewidth=1,markersize=4);
-plt.plot(arr_POCS[0,-1], arr_POCS[1,-1], '-x', color=(1,0,0,1),linewidth=2,markersize=8);
-plt.title("POCS");
+plt.plot(arr_POCS[0, :], arr_POCS[1, :], '-x', color=(1, 0, 0, 1), linewidth=1, markersize=4)
+plt.plot(arr_POCS[0, -1], arr_POCS[1, -1], '-x', color=(1, 0, 0, 1), linewidth=2, markersize=8)
+plt.title("POCS")
 
-plt.subplot(1,2,2);
+# %%
+
+plt.subplot(1, 2, 2)
 plt.axis('equal')
 # draw a part of the set D
-plt.plot([2,-1],[-1,2],color=(0,0,0,1),linewidth=2);
+plt.plot([2, -1], [-1, 2], color=(0, 0, 0, 1), linewidth=2)
 # draw the boundary of the set C
-an = np.linspace(0, 2*np.pi, 100)
-plt.plot(np.cos(an), np.sin(an),color=(0,0,0,1),linewidth=1);
+an = np.linspace(0, 2 * np.pi, 100)
+plt.plot(np.cos(an), np.sin(an), color=(0, 0, 0, 1), linewidth=1)
 # visualize iterates of Dykstra's Algorithm
-plt.plot(arr_Dykstra[0,:], arr_Dykstra[1,:], '-*', color=(0,0,1,1),linewidth=1,markersize=4);
-plt.plot(arr_Dykstra[0,-1], arr_Dykstra[1,-1], '*', color=(0,0,1,1),linewidth=2,markersize=8);
-plt.title("Dykstra");
+plt.plot(arr_Dykstra[0, :], arr_Dykstra[1, :], '-*', color=(0, 0, 1, 1), linewidth=1, markersize=4)
+plt.plot(arr_Dykstra[0, -1], arr_Dykstra[1, -1], '*', color=(0, 0, 1, 1), linewidth=2, markersize=8)
+plt.title("Dykstra")
 # show result
-plt.show();
-
-
-
-
-
+plt.show()
