@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
@@ -29,6 +31,20 @@ ax = fig.add_subplot(111, projection='3d')
 surf = ax.plot_surface(X, Y, Z)
 
 # Create x,y,z labels
+ax.set_title("Surface plot of f(x,y) = (1 - xy)^2")
+ax.set_xlabel("x")
+ax.set_ylabel("y")
+ax.set_zlabel("z")
+
+# Creating a legend doesn't seem useful as there is only one surface
 
 # Create figures in PDF and PNG format.
+try:
+    os.mkdir("output")
+except FileExistsError:
+    pass
+
+plt.savefig("output/surface_plot.pdf")
+plt.savefig("output/surface_plot.png")
+
 plt.show()
