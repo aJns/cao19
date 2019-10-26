@@ -49,10 +49,7 @@ def projC(y0):
 def residual(y):
     res = np.inf
 
-    # Checking if all y_i are >= 0
-    # This might be problematic if y_i is very close to 0 but negative
-    # But it seems to work okay for now
-    if all([i >= 0 for i in y]):
+    if all([i >= -0.00001 for i in y]):
         res = abs(sum(y) - 1)
 
     return res
@@ -65,10 +62,14 @@ def POCS(x0, tol, maxiter, check):
     y = x.copy()
     res = tol
 
+    iter_count = 0
+
     # taping
     seq = [x0]
 
     for iter in np.arange(0, maxiter):
+
+        iter_count = iter
 
         ###########################################################################
         ### DONE: Perform the update step of the Alternating Projection Method. ###
@@ -96,6 +97,8 @@ def POCS(x0, tol, maxiter, check):
         if iter % check == 0:
             print('Iter: %d, res: %f' % (iter, res))
 
+    print("Ran for {} iterations".format(iter_count))
+
     return seq
 
 
@@ -107,25 +110,47 @@ def Dykstra(x0, tol, maxiter, check):
     p = np.zeros(x.shape)
     q = np.zeros(x.shape)
 
+    iter_count = 0
+
     # taping
     seq = [x0]
 
     for iter in np.arange(0, maxiter):
 
+        iter_count = iter
+
         ###########################################################################
-        ### TODO: Perform the update step of the Dykstra's  Projection Method.  ###
+        ### DONE: Perform the update step of the Dykstra's  Projection Method.  ###
         # Denote the points on $C$ by $y$ and the points on $D$ by $x$. Append
         # $y$ and $x$ to the list 'seq'. 
         # Implement an appropriate breaking condition. Define an appropriate
         # residual and break the loop if res<tol.
-        #
-        # WRITE YOUR SOLUTION HERE
-        #
+
+        y = projC(x + p)
+
+        p = x + p - y
+
+        x = projD(y + q)
+
+        q = y + q - x
+
+        seq.append(y)
+        seq.append(x)
+
+        res = residual(x)
+
+        if res < tol:
+            print("Stopped iteration since res < tol")
+            print("\tres: {}, tol: {}".format(res, tol))
+            break
+
         ###########################################################################
 
         # provide some information
         if iter % check == 0:
             print('Iter: %d, res: %f' % (iter, res))
+
+    print("Ran for {} iterations".format(iter_count))
 
     return seq
 
