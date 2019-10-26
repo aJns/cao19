@@ -45,14 +45,12 @@ def projC(y0):
 
     return y0 / max(1, l2norm)
 
+def distance(x1, x2):
+    return np.sqrt(sum([x**2 for x in x1-x2]))
 
-def residual(y):
-    res = np.inf
 
-    if all([i >= -0.00001 for i in y]):
-        res = abs(sum(y) - 1)
-
-    return res
+def residual(current, previous):
+    return distance(current, previous)
 
 
 # Alternating projection method
@@ -79,12 +77,12 @@ def POCS(x0, tol, maxiter, check):
         # residual and break the loop if res<tol.
 
         x = projD(seq[-1])
-        seq.append(x)
-
         y = projC(x)
+
+        seq.append(x)
         seq.append(y)
 
-        res = residual(y)
+        res = residual(seq[-1], seq[-2])
 
         if res < tol:
             print("Stopped iteration since res < tol")
@@ -137,7 +135,7 @@ def Dykstra(x0, tol, maxiter, check):
         seq.append(y)
         seq.append(x)
 
-        res = residual(x)
+        res = residual(seq[-1], seq[-2])
 
         if res < tol:
             print("Stopped iteration since res < tol")
@@ -182,6 +180,13 @@ seq_Dykstra = Dykstra(x0, tol, maxiter, check)
 arr_Dykstra = np.vstack(seq_Dykstra).T
 
 # %%
+
+# Some metrics
+POCS_distance = distance(seq_POCS[0], seq_POCS[-1])
+Dykstra_distance = distance(seq_Dykstra[0], seq_Dykstra[-1])
+
+print("POCS distance to result:", POCS_distance)
+print("Dykstra distance to result:", Dykstra_distance)
 
 ### visualize the result:
 fig = plt.figure()
