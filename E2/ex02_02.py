@@ -46,15 +46,16 @@ def projC(y0):
     return y0 / max(1, l2norm)
 
 
-def combinedRes(x, y):
-    dRes = abs(x[0] + x[1] - 1)
-    cRes = abs(y[0] ** 2 + y[1] ** 2 - 1)
+def residual(y):
+    res = np.inf
 
-    print("dRes:", dRes)
-    print("cRes:", cRes)
+    # Checking if all y_i are >= 0
+    # This might be problematic if y_i is very close to 0 but negative
+    # But it seems to work okay for now
+    if all([i >= 0 for i in y]):
+        res = abs(sum(y) - 1)
 
-#    return dRes + cRes
-    return 999
+    return res
 
 
 # Alternating projection method
@@ -70,7 +71,7 @@ def POCS(x0, tol, maxiter, check):
     for iter in np.arange(0, maxiter):
 
         ###########################################################################
-        ### TODO: Perform the update step of the Alternating Projection Method. ###
+        ### DONE: Perform the update step of the Alternating Projection Method. ###
         # Denote the points on $C$ by $y$ and the points on $D$ by $x$. Append
         # $y$ and $x$ to the list 'seq'. 
         # Implement an appropriate breaking condition. Define an appropriate
@@ -82,7 +83,7 @@ def POCS(x0, tol, maxiter, check):
         y = projC(x)
         seq.append(y)
 
-        res = combinedRes(x, y)
+        res = residual(y)
 
         if res < tol:
             print("Stopped iteration since res < tol")
