@@ -76,8 +76,8 @@ def POCS(x0, tol, maxiter, check):
         # Implement an appropriate breaking condition. Define an appropriate
         # residual and break the loop if res<tol.
 
-        x = projD(seq[-1])
-        y = projC(x)
+        x = projC(seq[-1])
+        y = projD(x)
 
         seq.append(x)
         seq.append(y)
@@ -160,11 +160,11 @@ maxiter = 100
 check = 10
 
 ###################################################################################
-### TODO: Find an initialization x0 for which POCS and Dykstra's Algorithm converge 
+### DONE: Find an initialization x0 for which POCS and Dykstra's Algorithm converge
 # to (clearly) different points. [Just redefine x0 here!] 
-#
-# WRITE YOUR SOLUTION HERE
-#
+
+x0 = np.array([0.5, 1.5])
+
 ###################################################################################
 
 # %%
