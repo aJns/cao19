@@ -9,10 +9,14 @@
 # basic numpy import
 import numpy as np
 
+import time
+
+import matplotlib.pyplot as plt
+
 # random seed fix, do not change this
 np.random.seed(0)
 
-initial_func_val = 0    # initial function value which is f(0)=0
+initial_func_val = 0  # initial function value which is f(0)=0
 
 # this creates an array of slopes to be checked
 slopes_array = np.random.randint(10, size=(100, 5))
@@ -28,6 +32,17 @@ slopes_array = np.random.randint(10, size=(100, 5))
 break_points = [0, 20, 40, 60, 80, 100]
 
 
+# Helpful for visualization
+def plot_function(slopes, break_points):
+    x = np.array(break_points)
+    y = np.array([x[0]])
+
+    for i in range(len(slopes)):
+        new_y = y[i] + slopes[i] * (x[i + 1] - x[i])
+        y = np.append(y, new_y)
+
+    plt.plot(x, y)
+    plt.show()
 
 
 def convex_check(slopes, break_points):
@@ -38,13 +53,19 @@ def convex_check(slopes, break_points):
         break_points {np.array} -- List of Breakpoints
     """
 
-    ###
-    # TODO: Write a function which returns True if the function generated from
-    #       slopes and breakpoints is convex.
-    #       Otherwise, return False.
-    ###
-    
-    return True
+    # If I understood correctly, the function is non-decreasing, thus
+    # If the slope is smaller than the last one, the function is non-convex
+    convexity = True
+
+    prev_slope = slopes[0]
+    for slope in slopes[1:]:
+        if slope < prev_slope:
+            convexity = False
+            break
+        else:
+            prev_slope = slope
+
+    return convexity
 
 
 convex_func_count = 0
