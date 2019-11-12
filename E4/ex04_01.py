@@ -53,10 +53,9 @@ def convex_check(slopes, break_points):
         break_points {np.array} -- List of Breakpoints
     """
 
-    # If I understood correctly, the function is non-decreasing, thus
-    # If the slope is smaller than the last one, the function is non-convex
     convexity = True
 
+    # If the slope is smaller than the last one, the function is non-convex
     prev_slope = slopes[0]
     for slope in slopes[1:]:
         if slope < prev_slope:
