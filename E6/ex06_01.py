@@ -1,7 +1,5 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 # Let $f$ be a continuous piecewise linear function. We represent $f$ by a sequences
 # (t_0, ..., t_{n-1}) of breakpoints
@@ -18,14 +16,14 @@ n = 5
 t = np.linspace(-5, 5, n)
 
 # function evaluations at breakpoints
-f = t**2 - 0.5*t                
+f = t ** 2 - 0.5 * t
 
-s_before = -float('Inf')         # s_before for s_{-1}
+s_before = -np.inf  # s_before for s_{-1}
 
 # comprises of s[0] till s[n-1] as per the above description
-s = np.zeros(n-1)               # tentative slopes, see TODO below
+s = np.zeros(n - 1)  # tentative slopes, see TODO below
 
-s_after = float('Inf')          # s_after for s_{n-1}
+s_after = np.inf  # s_after for s_{n-1}
 
 # Note that the domain is only from -5 till 5
 
@@ -33,8 +31,16 @@ s_after = float('Inf')          # s_after for s_{n-1}
 # The 's' array contains only tentative slopes, 
 # you need to calculate the actual slopes below 
 # using the function values at breakpoints.
-for i in np.arange(n-1):
-    pass  # TODO: Compute actual slopes and store the values in the array "s"
+for i in np.arange(n):
+    s[i - 1] = (f[i] - f[i - 1]) / (t[i] - t[i - 1])
+
+print(f)
+print(t)
+print(s)
+
+# TODO: remove these
+plt.plot(t, f)
+plt.show()
 
 
 def conjugate_function(y, func_vals, breakpoints):
@@ -48,14 +54,11 @@ def conjugate_function(y, func_vals, breakpoints):
 n_2 = 50
 t_2 = np.linspace(-10, 10, n_2)
 
-
-f_2 =  # TODO: Evaluate conjugate_function here over t_2
-
+f_2 = None  # TODO: Evaluate conjugate_function here over t_2
 
 # Starting the plot
 # We want to compare original function and conjugate function side by side.
 fig = plt.figure()
-
 
 # You may use x axis limits from -10 till 10.
 
