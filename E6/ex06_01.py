@@ -31,16 +31,16 @@ s_after = np.inf  # s_after for s_{n-1}
 # The 's' array contains only tentative slopes, 
 # you need to calculate the actual slopes below 
 # using the function values at breakpoints.
-for i in np.arange(n):
-    s[i - 1] = (f[i] - f[i - 1]) / (t[i] - t[i - 1])
+for i in np.arange(0, n-1):
+    s[i] = (f[i + 1] - f[i]) / (t[i + 1] - t[i])
 
 print(f)
 print(t)
 print(s)
 
 # TODO: remove these
-plt.plot(t, f)
-plt.show()
+#plt.plot(t, f)
+#plt.show()
 
 
 def conjugate_function(y, func_vals, breakpoints):
@@ -48,13 +48,38 @@ def conjugate_function(y, func_vals, breakpoints):
     # func_vals : Function values
     # breakpoints : original breakpoints
     # TODO: Complete the conjugate function using function values and breakpoints
-    return
+
+    ## This is just doodling; There's no proof behind it
+
+    # First we find the piece where we are
+
+    i = 0
+
+    for j in range(len(breakpoints)):
+        if y > breakpoints[j]:
+            i = j
+
+    slope = 0
+
+    if i == 0:
+        slope = s_before
+    elif i >= len(breakpoints):
+        slope = s_after
+    else:
+        slope = (func_vals[i] - func_vals[i - 1]) / (breakpoints[i] - breakpoints[i - 1])
+
+    retval = slope*breakpoints[i] - func_vals[i]
+    print(retval)
+
+    ##
+
+    return retval
 
 
 n_2 = 50
 t_2 = np.linspace(-10, 10, n_2)
 
-f_2 = None  # TODO: Evaluate conjugate_function here over t_2
+f_2 = [conjugate_function(y, f, t) for y in t_2]  # TODO: Evaluate conjugate_function here over t_2
 
 # Starting the plot
 # We want to compare original function and conjugate function side by side.
@@ -64,15 +89,20 @@ fig = plt.figure()
 
 ax1 = fig.add_subplot(1, 2, 1)
 ax1.set_title('Original function')
-# TODO: Plot the original function with f on y axis and t on x axis.
+ax1.plot(t, f)
+plt.grid()
 # Plot only on the domain of the function.
 # You may skip plotting infinities here.
 # Also set the grid of both the axes to 'True'. 
 
 ax2 = fig.add_subplot(1, 2, 2)
 ax2.set_title('Conjugate function')
-# TODO: Plot the conjugate function with f_2 on y axis and t_2 on x axis.
+ax2.plot(t_2, f_2)
+plt.grid()
+
 # Also set the grid of both the axes to 'True'.
+
+plt.show()
 
 
 # TODO: Save the figure as 'original_and_conjugate_functions.png'
