@@ -49,29 +49,11 @@ def conjugate_function(y, func_vals, breakpoints):
     # breakpoints : original breakpoints
     # TODO: Complete the conjugate function using function values and breakpoints
 
-    ## This is just doodling; There's no proof behind it
+    retval = np.inf
 
-    # First we find the piece where we are
-
-    i = 0
-
-    for j in range(len(breakpoints)):
-        if y > breakpoints[j]:
-            i = j
-
-    slope = 0
-
-    if i == 0:
-        slope = s_before
-    elif i >= len(breakpoints):
-        slope = s_after
-    else:
-        slope = (func_vals[i] - func_vals[i - 1]) / (breakpoints[i] - breakpoints[i - 1])
-
-    retval = slope*breakpoints[i] - func_vals[i]
-    print(retval)
-
-    ##
+    if (y < s_after) and (y > s_before):
+        vals = -func_vals + y*breakpoints
+        retval = np.max(vals)
 
     return retval
 
