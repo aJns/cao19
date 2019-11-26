@@ -31,8 +31,8 @@ s_after = np.inf  # s_after for s_{n-1}
 # The 's' array contains only tentative slopes, 
 # you need to calculate the actual slopes below 
 # using the function values at breakpoints.
-for i in np.arange(0, n - 1):
-    s[i] = (f[i + 1] - f[i]) / (t[i + 1] - t[i])
+for i in np.arange(n - 1):
+    s[i] = (f[i] - f[i-1]) / (t[i] - t[i - 1])
 
 
 # NOTE: It seems that the slopes are not used in the template to do anything
@@ -41,7 +41,7 @@ def is_convex(slopes, s_before=None, s_after=None):
     convex = True
 
     n_slopes = len(slopes)
-    for i in range(1, n_slopes):
+    for i in np.arange(n_slopes):
         convex = slopes[i - 1] <= slopes[i]
         if not convex:
             break
