@@ -31,28 +31,40 @@ s_after = np.inf  # s_after for s_{n-1}
 # The 's' array contains only tentative slopes, 
 # you need to calculate the actual slopes below 
 # using the function values at breakpoints.
-for i in np.arange(0, n-1):
+for i in np.arange(0, n - 1):
     s[i] = (f[i + 1] - f[i]) / (t[i + 1] - t[i])
 
-print(f)
-print(t)
-print(s)
 
-# TODO: remove these
-#plt.plot(t, f)
-#plt.show()
+# NOTE: It seems that the slopes are not used in the template to do anything
+# We could use them the check that the function is convex, like in 1a
+def is_convex(slopes, s_before=None, s_after=None):
+    convex = True
+
+    n_slopes = len(slopes)
+    for i in range(1, n_slopes):
+        convex = slopes[i - 1] <= slopes[i]
+        if not convex:
+            break
+
+    if s_before:
+        convex = convex and s_before <= slopes[0]
+
+    if s_after:
+        convex = convex and slopes[-1] <= s_after
+
+    return convex
 
 
 def conjugate_function(y, func_vals, breakpoints):
     # y is the point of evaluation
     # func_vals : Function values
     # breakpoints : original breakpoints
-    # TODO: Complete the conjugate function using function values and breakpoints
+    # DONE: Complete the conjugate function using function values and breakpoints
 
     retval = np.inf
 
     if (y < s_after) and (y > s_before):
-        vals = -func_vals + y*breakpoints
+        vals = -func_vals + y * breakpoints
         retval = np.max(vals)
 
     return retval
@@ -61,7 +73,7 @@ def conjugate_function(y, func_vals, breakpoints):
 n_2 = 50
 t_2 = np.linspace(-10, 10, n_2)
 
-f_2 = [conjugate_function(y, f, t) for y in t_2]  # TODO: Evaluate conjugate_function here over t_2
+f_2 = [conjugate_function(y, f, t) for y in t_2]  # DONE: Evaluate conjugate_function here over t_2
 
 # Starting the plot
 # We want to compare original function and conjugate function side by side.
@@ -86,6 +98,5 @@ plt.grid()
 
 plt.savefig("original_and_conjugate_functions.png")
 plt.show()
-
 
 # DONE: Save the figure as 'original_and_conjugate_functions.png'
