@@ -84,7 +84,8 @@ plt.grid()
 
 # Also set the grid of both the axes to 'True'.
 
+plt.savefig("original_and_conjugate_functions.png")
 plt.show()
 
 
-# TODO: Save the figure as 'original_and_conjugate_functions.png'
+# DONE: Save the figure as 'original_and_conjugate_functions.png'
