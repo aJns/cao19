@@ -1,8 +1,6 @@
-
 import numpy as np
 
 import matplotlib.pyplot as plt
-
 
 # Let $f$ be a continuous piecewise linear function. We represent $f$ by a sequences
 # (t_0, ..., t_{n-1}) of breakpoints
@@ -16,15 +14,18 @@ import matplotlib.pyplot as plt
 # DO NOT CHANGE THIS SECTION
 n = 5
 t = np.linspace(-5, 5, n)
-f = t**2 - 0.5*t
-s = np.zeros(n-1)
-s_before = -float('Inf')         # s_before for s_{-}
-s_after = float('Inf')          # s_after for s_{+}
+f = t ** 2 - 0.5 * t
+s = np.zeros(n - 1)
+s_before = -float('Inf')  # s_before for s_{-}
+s_after = float('Inf')  # s_after for s_{+}
 
-# TODO: Compute slopes
-for i in np.arange(0,n-1):
-    pass
-    
+# DONE: Compute slopes
+for i in np.arange(0, n - 1):
+    f_diff = f[i] - f[i + 1]
+    t_diff = t[i] - t[i + 1]
+    s[i] = f_diff / t_diff
+
+
 # TODO: CALCULATE THE SUBDIFFERENTIAL OVER t
 
 
