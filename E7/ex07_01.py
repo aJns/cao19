@@ -25,9 +25,33 @@ for i in np.arange(0, n - 1):
     t_diff = t[i] - t[i + 1]
     s[i] = f_diff / t_diff
 
-
 # TODO: CALCULATE THE SUBDIFFERENTIAL OVER t
+sub_t, subval = np.zeros(n*2), np.zeros(n*2)
 
+for i in range(n):
+    first, second = None, None
+
+    if i == 0:
+        first = s_before
+        second = s[0]
+
+    elif i >= n-1:
+        first = s[-1]
+        second = s_after
+
+    else:
+        first = s[i-1]
+        second = s[i]
+
+    # We have each value of t twice for plotting the vertical line
+    sub_t[i*2] = t[i]
+    sub_t[i*2 + 1] = t[i]
+
+    subval[i*2] = first
+    subval[i*2 + 1] = second
+
+subval = np.array(subval).flatten()
+sub_t = np.array(sub_t).flatten()
 
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
@@ -35,9 +59,11 @@ ax1 = fig.add_subplot(1, 1, 1)
 
 
 # TODO: PLOT THE OBTAINED SUBDIFFERENTIAL VS t.
-
+ax1.plot(sub_t, subval)
 
 ax1.grid(True, which='both')
 plt.tight_layout()
-ax1.set_xlim(-5,5) # restrict the plot to -5 till 5 interval on x axis
+ax1.set_xlim(-5, 5)  # restrict the plot to -5 till 5 interval on x axis
 # TODO: SAVE THE FIGURE AS 'subdifferential_plot.png'
+
+plt.show()
