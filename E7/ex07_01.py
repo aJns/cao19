@@ -55,15 +55,17 @@ sub_t = np.array(sub_t).flatten()
 
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
-# TODO: SET APPROPRIATE TITLE
+# DONE: SET APPROPRIATE TITLE
+ax1.set_title("The subdifferential of f with regard to breakpoints t")
 
 
-# TODO: PLOT THE OBTAINED SUBDIFFERENTIAL VS t.
+# DONE: PLOT THE OBTAINED SUBDIFFERENTIAL VS t.
 ax1.plot(sub_t, subval)
 
 ax1.grid(True, which='both')
 plt.tight_layout()
 ax1.set_xlim(-5, 5)  # restrict the plot to -5 till 5 interval on x axis
-# TODO: SAVE THE FIGURE AS 'subdifferential_plot.png'
+# DONE: SAVE THE FIGURE AS 'subdifferential_plot.png'
+fig.savefig('subdifferential_plot.png')
 
 plt.show()
