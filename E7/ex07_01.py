@@ -25,7 +25,7 @@ for i in np.arange(0, n - 1):
     t_diff = t[i] - t[i + 1]
     s[i] = f_diff / t_diff
 
-# TODO: CALCULATE THE SUBDIFFERENTIAL OVER t
+# DONE: CALCULATE THE SUBDIFFERENTIAL OVER t
 sub_t, subval = np.zeros(n*2), np.zeros(n*2)
 
 for i in range(n):
@@ -35,7 +35,7 @@ for i in range(n):
         first = s_before
         second = s[0]
 
-    elif i >= n-1:
+    elif i >= len(s):
         first = s[-1]
         second = s_after
 
