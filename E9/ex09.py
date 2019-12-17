@@ -105,7 +105,7 @@ for iter in np.arange(0, maxiter):
     ###############################################################################
 
     if iter % check == 0:
-        print('iter: %d, val: %f, rank: %d' % (iter, val, rk))
+        print('iter: %d, val: %f, rank: %d' % (iter, val, rank))
 
 # visualize for every 10th image the outliers and the low-rank part
 fig = plt.figure()
