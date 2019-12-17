@@ -4,7 +4,7 @@ import numpy as np
 ### load data
 # A: data matrix of size M x N
 # (nx,ny): image dimensions (number of pixels in horizontal and vertical direction
-A, N, M, nx, ny = np.load('data/data.npy')
+A, N, M, nx, ny = np.load('data/data.npy', allow_pickle=True)
 
 
 ### auxilliary function
