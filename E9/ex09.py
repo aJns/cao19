@@ -61,12 +61,26 @@ def objective_function(X, Y, A, array_shape, mu, rho):
     return h + g
 
 
+def h_gradient(X, Y):
+    return np.array([2 * X, 2 * Y])
+
+
+def h_gradient_descent(X, Y):
+    return np.array([X, Y]) - tau * h_gradient(X, Y)
+
+
+def g_proximal_map(input):
+    return input
+
+
 prev_val = np.Inf
 
 for iter in np.arange(0, maxiter):
 
     ###############################################################################
-    # TODO: implement the Proximal Gradient Step 
+    # TODO: implement the Proximal Gradient Step
+
+    X, Y = g_proximal_map(h_gradient(X, Y))
 
     ###############################################################################
 
@@ -84,7 +98,6 @@ for iter in np.arange(0, maxiter):
     # TODO: 
     # - implement a suitable stopping criterion $res$<$tol$ for the algorithm
 
-    # YOLOO
     res = np.abs(prev_val - val)
 
     if res < tol:
