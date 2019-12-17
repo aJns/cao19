@@ -23,6 +23,10 @@ def convert2image(A, t):
 # TODO: 
 # - select suitable parameters $mu$ and $rho$ of the optimization model ###
 
+# Let's start out with 1s
+mu = 1
+rho = 1
+
 ###############################################################################
 
 ### Proximal Gradient Descent
@@ -37,8 +41,27 @@ tol = 1e-6  # break iterations if the residual $res$ drops below $tol$
 # - compute the Lipschitz constant $L$ of the gradient of the smooth part of the objective 
 # - set the step size parameter $tau$ such that the algorithm converges
 
+array_shape = M, N
+
+X = np.ones(array_shape)
+Y = np.ones(array_shape)
+
+# YOLOOO
+lipschitz_constant = 1
+tau = 1
+
+
 ###############################################################################
 
+def objective_function(X, Y, A, array_shape, mu, rho):
+    h_term = X + Y - A
+    h = 0.5 * (np.linalg.norm(h_term, ord='fro') ** 2)
+    g = mu * np.linalg.norm(X, ord=1) + rho * np.linalg.norm(Y, ord='nuc')
+
+    return h + g
+
+
+prev_val = np.Inf
 
 for iter in np.arange(0, maxiter):
 
@@ -52,11 +75,17 @@ for iter in np.arange(0, maxiter):
     # - compute the objective value $val$ 
     # - compute the current rank $rk$ of $Y$
 
+    val = objective_function(X, Y, A, array_shape, mu, rho)
+    rank = np.linalg.matrix_rank(Y)
+
     ###############################################################################
 
     ###############################################################################
     # TODO: 
     # - implement a suitable stopping criterion $res$<$tol$ for the algorithm
+
+    # YOLOO
+    res = np.abs(prev_val - val)
 
     if res < tol:
         break
