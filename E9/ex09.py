@@ -1,6 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from scipy import misc
+import numpy as np
 
 ### load data
 # A: data matrix of size M x N
@@ -86,10 +85,10 @@ plt.show()
 
 # write 3 outlier masks
 img = convert2image(X, 10)
-misc.imsave('outlier0010.png', img)
+plt.imsave('outlier0010.png', img)
 img = convert2image(X, 50)
-misc.imsave('outlier0050.png', img)
+plt.imsave('outlier0050.png', img)
 img = convert2image(X, 99)
-misc.imsave('outlier0099.png', img)
+plt.imsave('outlier0099.png', img)
 img = convert2image(Y, 50)
-misc.imsave('background0050.png', img)
+plt.imsave('background0050.png', img)
