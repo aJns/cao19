@@ -43,8 +43,8 @@ tol = 1e-6  # break iterations if the residual $res$ drops below $tol$
 
 array_shape = M, N
 
-X = np.ones(array_shape)
-Y = np.ones(array_shape)
+X = np.random.rand(M, N)
+Y = np.random.rand(M, N)
 
 # YOLOOO
 lipschitz_constant = 1
@@ -61,16 +61,16 @@ def objective_function(X, Y, A, array_shape, mu, rho):
     return h + g
 
 
-def h_gradient(X, Y):
-    return np.array([2 * X, 2 * Y])
-
-
 def h_gradient_descent(X, Y):
-    return np.array([X, Y]) - tau * h_gradient(X, Y)
+    h_gradient = 2 * X + 2 * Y
+    X_term = X - tau * h_gradient
+    Y_term = Y - tau * h_gradient
+    return X_term, Y_term
 
 
-def g_proximal_map(input):
-    return input
+def g_proximal_map(X, Y):
+
+    return X, Y
 
 
 prev_val = np.Inf
