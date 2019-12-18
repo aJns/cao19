@@ -56,7 +56,7 @@ tau = 1
 def objective_function(X, Y, A, array_shape, mu, rho):
     h_term = X + Y - A
     h = 0.5 * (np.linalg.norm(h_term, ord='fro') ** 2)
-    g = mu * np.linalg.norm(X, ord=1) + rho * np.linalg.norm(Y, ord='nuc')
+    g = rho * np.linalg.norm(X, ord=1) + mu * np.linalg.norm(Y, ord='nuc')
 
     return h + g
 
@@ -69,8 +69,29 @@ def h_gradient_descent(X, Y):
 
 
 def g_proximal_map(X, Y):
+    # the proximal map for X is prox_{rho||X||_1} + mu*||Y||_*
+    # the proximal map for Y is prox_{mu||Y||_*} + rho*||X||_1
 
-    return X, Y
+    def X_prox(X):
+        pass
+
+    def Y_prox(Y):
+        prox_param = 1
+
+        def st(A):
+            A[prox_param < A] -= prox_param
+            A[A < -prox_param] += prox_param
+            A[-prox_param <= A <= prox_param] = 0
+
+            return A
+
+        u, s, vh = np.linalg.svd(Y)
+        return u * st(s) * vh
+
+    X_next = X_prox(X) + mu * np.linalg.norm(Y, ord='nuc')
+    Y_next = Y_prox(Y) + rho * np.linalg.norm(X, ord=1)
+
+    return X_next, Y_next
 
 
 prev_val = np.Inf
