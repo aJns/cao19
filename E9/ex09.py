@@ -31,7 +31,7 @@ rho = 1
 
 ### Proximal Gradient Descent
 maxiter = 10000
-check = 10  # print the objective value and the rank of $Y$ after $check$ iterations
+check = 1  # print the objective value and the rank of $Y$ after $check$ iterations
 tol = 1e-6  # break iterations if the residual $res$ drops below $tol$
 
 # initialize 
@@ -41,13 +41,17 @@ tol = 1e-6  # break iterations if the residual $res$ drops below $tol$
 # - compute the Lipschitz constant $L$ of the gradient of the smooth part of the objective 
 # - set the step size parameter $tau$ such that the algorithm converges
 
+M = N
+
+A = A[:M, :N]
+
 array_shape = M, N
+print(A.shape)
 
-X = np.ones(array_shape)
-Y = np.ones(array_shape)
+X = np.eye(M, N)
+Y = np.eye(M, N)
 
-# YOLOOO
-lipschitz_constant = 1
+lipschitz_constant = 2
 tau = 1
 
 
@@ -62,13 +66,14 @@ def objective_function(X, Y, A, array_shape, mu, rho):
 
 
 def h_gradient_descent(X, Y):
-    h_gradient = 2 * X + 2 * Y
+    h_gradient = 2 * (X + Y)
     X_term = X - tau * h_gradient
     Y_term = Y - tau * h_gradient
+
     return X_term, Y_term
 
 
-def g_proximal_map(X, Y):
+def g_proximal_map(grad_X, grad_Y, X, Y):
     # the proximal map for X is prox_{rho||X||_1} + mu*||Y||_*
     # the proximal map for Y is prox_{mu||Y||_*} + rho*||X||_1
 
@@ -91,8 +96,8 @@ def g_proximal_map(X, Y):
         s_shape = S.shape[0]
         return np.dot(u[:, :s_shape] * S, vh)
 
-    X_next = X_prox(X) + mu * np.linalg.norm(Y, ord='nuc')
-    Y_next = Y_prox(Y) + rho * np.linalg.norm(X, ord=1)
+    X_next = X_prox(grad_X) + mu * np.linalg.norm(Y, ord='nuc')
+    Y_next = Y_prox(grad_Y) + rho * np.linalg.norm(X, ord=1)
 
     return X_next, Y_next
 
@@ -104,8 +109,9 @@ for iter in np.arange(0, maxiter):
     ###############################################################################
     # TODO: implement the Proximal Gradient Step
 
-    X, Y = h_gradient_descent(X, Y)
-    X, Y = g_proximal_map(X, Y)
+    grad_X, grad_Y = h_gradient_descent(X, Y)
+    X, Y = g_proximal_map(grad_X, grad_Y, X, Y)
+#    X, Y = grad_X, grad_Y
 
     ###############################################################################
 
