@@ -43,8 +43,8 @@ tol = 1e-6  # break iterations if the residual $res$ drops below $tol$
 
 array_shape = M, N
 
-X = np.random.rand(M, N)
-Y = np.random.rand(M, N)
+X = np.ones(array_shape)
+Y = np.ones(array_shape)
 
 # YOLOOO
 lipschitz_constant = 1
@@ -82,12 +82,14 @@ def g_proximal_map(X, Y):
         def st(A):
             A[prox_param < A] -= prox_param
             A[A < -prox_param] += prox_param
-            A[-prox_param <= A <= prox_param] = 0
+            A[(-prox_param <= A) & (A <= prox_param)] = 0
 
             return A
 
         u, s, vh = np.linalg.svd(Y)
-        return u * st(s) * vh
+        S = st(s)
+        s_shape = S.shape[0]
+        return np.dot(u[:, :s_shape] * S, vh)
 
     X_next = X_prox(X) + mu * np.linalg.norm(Y, ord='nuc')
     Y_next = Y_prox(Y) + rho * np.linalg.norm(X, ord=1)
