@@ -23,7 +23,6 @@ def convert2image(A, t):
 # TODO: 
 # - select suitable parameters $mu$ and $rho$ of the optimization model ###
 
-# Let's start out with 1s
 mu = 1
 rho = 1
 
@@ -41,12 +40,7 @@ tol = 1e-6  # break iterations if the residual $res$ drops below $tol$
 # - compute the Lipschitz constant $L$ of the gradient of the smooth part of the objective 
 # - set the step size parameter $tau$ such that the algorithm converges
 
-M = N
-
-A = A[:M, :N]
-
 array_shape = M, N
-print(A.shape)
 
 X = np.eye(M, N)
 Y = np.eye(M, N)
@@ -57,16 +51,21 @@ tau = 1
 
 ###############################################################################
 
-def objective_function(X, Y, A, array_shape, mu, rho):
+def h_function(X, Y, A):
     h_term = X + Y - A
     h = 0.5 * (np.linalg.norm(h_term, ord='fro') ** 2)
+    return h
+
+
+def objective_function(X, Y, A, mu, rho):
+    h = h_function(X, Y, A)
     g = rho * np.linalg.norm(X, ord=1) + mu * np.linalg.norm(Y, ord='nuc')
 
     return h + g
 
 
 def h_gradient_descent(X, Y):
-    h_gradient = 2 * (X + Y)
+    h_gradient = 2 * (X + Y - A)
     X_term = X - tau * h_gradient
     Y_term = Y - tau * h_gradient
 
@@ -111,7 +110,6 @@ for iter in np.arange(0, maxiter):
 
     grad_X, grad_Y = h_gradient_descent(X, Y)
     X, Y = g_proximal_map(grad_X, grad_Y, X, Y)
-#    X, Y = grad_X, grad_Y
 
     ###############################################################################
 
@@ -120,7 +118,7 @@ for iter in np.arange(0, maxiter):
     # - compute the objective value $val$ 
     # - compute the current rank $rk$ of $Y$
 
-    val = objective_function(X, Y, A, array_shape, mu, rho)
+    val = objective_function(X, Y, A, mu, rho)
     rank = np.linalg.matrix_rank(Y)
 
     ###############################################################################
