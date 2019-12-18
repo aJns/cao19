@@ -73,10 +73,11 @@ def g_proximal_map(X, Y):
     # the proximal map for Y is prox_{mu||Y||_*} + rho*||X||_1
 
     def X_prox(X):
-        pass
+        prox_param = tau
+        return np.maximum(0, np.abs(X) - prox_param) * np.sign(X)
 
     def Y_prox(Y):
-        prox_param = 1
+        prox_param = tau
 
         def st(A):
             A[prox_param < A] -= prox_param
@@ -101,7 +102,8 @@ for iter in np.arange(0, maxiter):
     ###############################################################################
     # TODO: implement the Proximal Gradient Step
 
-    X, Y = g_proximal_map(h_gradient_descent(X, Y))
+    X, Y = h_gradient_descent(X, Y)
+    X, Y = g_proximal_map(X, Y)
 
     ###############################################################################
 
