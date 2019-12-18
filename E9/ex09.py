@@ -80,7 +80,7 @@ for iter in np.arange(0, maxiter):
     ###############################################################################
     # TODO: implement the Proximal Gradient Step
 
-    X, Y = g_proximal_map(h_gradient(X, Y))
+    X, Y = g_proximal_map(h_gradient_descent(X, Y))
 
     ###############################################################################
 
