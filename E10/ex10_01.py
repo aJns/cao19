@@ -54,6 +54,25 @@ def objective_function(u):
     norm = np.linalg.norm(K * u, ord=1)
     return inner_product * norm
 
+
+def calc_subgradient(u):
+    return np.sum(c)  # ???????
+
+
+def project(descent_step):
+    # Maybe this should be tau? naww probly not
+    lamb = 1
+
+    # K*x is the thing inside the norm
+    x = K * descent_step
+    signs = np.sign(x)
+
+    abs_minus = np.abs(x) - tau * lamb
+    max_part = np.maximum(0, abs_minus)
+
+    return max_part * signs
+
+
 cost_values = []
 
 plt.figure(1)
@@ -70,15 +89,18 @@ for iter in np.arange(0, maxiter):
 
     # TODO: Change tau appropriately for subgradient descent
 
-    # TODO: compute subgradient 
+    # TODO: compute subgradient
+    subgradient = calc_subgradient(u_k)
 
     # DONE: compute objective value at u_k
     val = objective_function(u_k)
     cost_values.append(val)
 
     # TODO: update step
+    descent_step = u_k - tau * subgradient
 
     # TODO: projection step
+    u_kp1 = project(descent_step)
 
     # print information
     if iter % check == 0:
