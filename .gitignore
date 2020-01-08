@@ -2,3 +2,4 @@
 venv/*
 *.orig
 tags
+__pycache__
