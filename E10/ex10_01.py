@@ -56,21 +56,11 @@ def objective_function(u):
 
 
 def calc_subgradient(u):
-    return np.sum(c)  # ???????
+    return np.gradient(K*u)[:ny*nx]
 
 
 def project(descent_step):
-    # Maybe this should be tau? naww probly not
-    lamb = 1
-
-    # K*x is the thing inside the norm
-    x = K * descent_step
-    signs = np.sign(x)
-
-    abs_minus = np.abs(x) - tau * lamb
-    max_part = np.maximum(0, abs_minus)
-
-    return max_part * signs
+    return descent_step - c
 
 
 cost_values = []
@@ -113,7 +103,7 @@ for iter in np.arange(0, maxiter):
         # of u_kp1 is >0 then set the class to 1 else 0
         col_img2d = img_u.copy()
         col_img2d[col_img2d > 0] = 1
-        col_img2d[col_img2d <= 0] = 1
+        col_img2d[col_img2d <= 0] = 0
 
         # DONE: And, then all pixels belonging to class 0 should be given blue color
         # and class 1 is denoted by red color (foreground red, background blue)
