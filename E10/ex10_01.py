@@ -54,11 +54,13 @@ u_k = u_kp1.copy()
 def objective_function(u):
     inner_product = np.dot(c, u)
     norm = np.linalg.norm(K * u, ord=1)
-    return inner_product * norm
+    return inner_product + norm
 
 
 def calc_subgradient(u):
-    return np.gradient(K * u)[:ny * nx]
+    Ku = np.transpose(K)*np.sign(K*u)
+
+    return Ku
 
 
 def project(descent_step):
@@ -84,7 +86,7 @@ def create_col_img(img_u):
 
     return col_img
 
-
+drew_colorbar = False
 # fig1 = plt.figure(1);
 # plt.show(block=False);
 for iter in np.arange(0, maxiter):
@@ -93,7 +95,8 @@ for iter in np.arange(0, maxiter):
     u_k = u_kp1
 
     # DONE: Change tau appropriately for subgradient descent
-    tau -= tau / 25
+    tau -= tau / 10000
+
 
     # DONE: compute subgradient
     subgradient = calc_subgradient(u_k)
@@ -126,14 +129,17 @@ for iter in np.arange(0, maxiter):
         # DONE: Create subplots where you show cost, img_u and col_img side by side.
         # Maybe gotta clear these each iteration?
         ax1.plot(cost_values)
-        ax2.imshow(img_u)
+        weighted_im = ax2.imshow(img_u)
         ax3.imshow(col_img)
 
         # DONE: add titles and make plots nicer (add color bar if required)
         ax1.set_title("Cost value per iteration")
-        ax2.set_title("Weighted image")  # TODO: Is this a reasonable name?
-        # TODO: colorbar for ax2?
+        ax2.set_title("Front-Back weighted image")
         ax3.set_title("Segmented image")
+
+        if not drew_colorbar:
+            plt.colorbar(weighted_im, ax=ax2)
+            drew_colorbar = True
 
         plt.pause(0.01)  # to visualize the changes
         # plt.pause(10)  # to visualize the changes
@@ -169,9 +175,10 @@ ax6.imshow(overlay)
 
 # DONE: add titles and make plots nicer (add color bar if required)
 ax4.set_title("Cost value per iteration")
-ax5.set_title("Weighted image")  # TODO: Is this a reasonable name?
-# TODO: colorbar for ax2?
+ax5.set_title("Front-Back weighted image")
 ax6.set_title("Overlay image")
+
+plt.colorbar(weighted_im, ax=ax5)
 
 plt.show()
 
