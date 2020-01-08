@@ -1,4 +1,6 @@
 import time
+from pathlib import Path
+
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -70,6 +72,17 @@ ax1 = plt.subplot(131)
 ax2 = plt.subplot(132)
 ax3 = plt.subplot(133)
 
+def create_col_img(img_u):
+    col_img2d = img_u.copy()
+    col_img2d[col_img2d > 0] = 1
+    col_img2d[col_img2d <= 0] = 0
+    col_img_red = col_img2d.copy()
+    col_img_blue = np.logical_not(col_img2d.copy())
+    col_img_green = np.zeros(img_2d_shape)
+    col_img = np.stack([col_img_red, col_img_green, col_img_blue], axis=-1)
+
+    return col_img
+
 # fig1 = plt.figure(1);
 # plt.show(block=False);
 for iter in np.arange(0, maxiter):
@@ -102,17 +115,11 @@ for iter in np.arange(0, maxiter):
 
         # DONE: Create a segmentation colored rgb image 'col_img' where if an element
         # of u_kp1 is >0 then set the class to 1 else 0
-        col_img2d = img_u.copy()
-        col_img2d[col_img2d > 0] = 1
-        col_img2d[col_img2d <= 0] = 0
 
         # DONE: And, then all pixels belonging to class 0 should be given blue color
         # and class 1 is denoted by red color (foreground red, background blue)
         # Note: First reshape u_kp1 appropriately.
-        col_img_red = col_img2d.copy()
-        col_img_blue = np.logical_not(col_img2d.copy())
-        col_img_green = np.zeros(img_2d_shape)
-        col_img = np.stack([col_img_red, col_img_green, col_img_blue], axis=-1)
+        col_img = create_col_img(img_u)
 
         # DONE: Create subplots where you show cost, img_u and col_img side by side.
         # Maybe gotta clear these each iteration?
@@ -121,6 +128,11 @@ for iter in np.arange(0, maxiter):
         ax3.imshow(col_img)
 
         # TODO: add titles and make plots nicer (add color bar if required)
+        ax1.set_title("Cost value per iteration")
+        ax2.set_title("Weighted image") # TODO: Is this a reasonable name?
+        # TODO: colorbar for ax2?
+        ax3.set_title("Segmented image")
+
 
         plt.pause(0.01)  # to visualize the changes
         # plt.pause(10)  # to visualize the changes
@@ -131,25 +143,43 @@ plt.close()
 
 ### evaluation (apply classifier to all pixels)
 
-# TODO: Create 'img_u' by reshaping u_kp1 appropriately
-# TODO: Create 'col_img' like before.
+# DONE: Create 'img_u' by reshaping u_kp1 appropriately
+img_u = np.reshape(u_kp1, img_2d_shape)
+# DONE: Create 'col_img' like before.
+col_img = create_col_img(img_u)
 
-# TODO construct overlay image 'convex combination of original image and 
+# DONE construct overlay image 'convex combination of original image and
 # segmentation (col_img)'; You may set the weight for 'col_img' to 0.45.
 
-overlay = ...  # TODO
+col_mult = 0.45
+og_img_mult = 1-col_mult
+overlay = og_img_mult*img + col_mult*col_img
+overlay = overlay/np.max(overlay)
 
-# TODO: add titles and make plots nicer (other color bar)
+plt.figure(2)
+ax4 = plt.subplot(131)
+ax5 = plt.subplot(132)
+ax6 = plt.subplot(133)
 
+# DONE: Create subplots where you show cost, img_u and overlay side by side.
+ax4.plot(cost_values)
+ax5.imshow(img_u)
+ax6.imshow(overlay)
 
-plt.figure()
-# TODO: Create subplots where you show cost, img_u and overlay side by side.
-# TODO: add titles and make plots nicer (add color bar if required)
+# DONE: add titles and make plots nicer (add color bar if required)
+ax4.set_title("Cost value per iteration")
+ax5.set_title("Weighted image") # TODO: Is this a reasonable name?
+# TODO: colorbar for ax2?
+ax6.set_title("Overlay image")
+
 plt.show()
 
-# TODO: save the variable 'col_img' to 'segmentation.png'
+Path("output").mkdir(exist_ok=True)
+# DONE: save the variable 'col_img' to 'segmentation.png'
+plt.imsave("output/segmentation.png", col_img)
 
-# TODO: save the variable 'overlay' to 'overlay.png'
+# DONE: save the variable 'overlay' to 'overlay.png'
+plt.imsave("output/overlay.png", overlay)
 
 # TODO: Consider following naive thresholding based segmentation.
 # Pixels with negative values in img_c  are set to class 0
