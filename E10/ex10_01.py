@@ -56,7 +56,7 @@ def objective_function(u):
 
 
 def calc_subgradient(u):
-    return np.gradient(K*u)[:ny*nx]
+    return np.gradient(K * u)[:ny * nx]
 
 
 def project(descent_step):
@@ -78,6 +78,7 @@ for iter in np.arange(0, maxiter):
     u_k = u_kp1
 
     # TODO: Change tau appropriately for subgradient descent
+    tau -= tau / 10
 
     # TODO: compute subgradient
     subgradient = calc_subgradient(u_k)
@@ -125,6 +126,7 @@ for iter in np.arange(0, maxiter):
         # plt.pause(10)  # to visualize the changes
 
         print("iter: %d, tau: %f, val: %f" % (iter, tau, val))
+
 plt.close()
 
 ### evaluation (apply classifier to all pixels)
