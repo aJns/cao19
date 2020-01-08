@@ -72,6 +72,7 @@ ax1 = plt.subplot(131)
 ax2 = plt.subplot(132)
 ax3 = plt.subplot(133)
 
+
 def create_col_img(img_u):
     col_img2d = img_u.copy()
     col_img2d[col_img2d > 0] = 1
@@ -83,33 +84,34 @@ def create_col_img(img_u):
 
     return col_img
 
+
 # fig1 = plt.figure(1);
 # plt.show(block=False);
 for iter in np.arange(0, maxiter):
 
-    # TODO:  Complete the following todos
+    # DONE:  Complete the following todos
     u_k = u_kp1
 
-    # TODO: Change tau appropriately for subgradient descent
-    tau -= tau / 10
+    # DONE: Change tau appropriately for subgradient descent
+    tau -= tau / 25
 
-    # TODO: compute subgradient
+    # DONE: compute subgradient
     subgradient = calc_subgradient(u_k)
 
     # DONE: compute objective value at u_k
     val = objective_function(u_k)
     cost_values.append(val)
 
-    # TODO: update step
+    # DONE: update step
     descent_step = u_k - tau * subgradient
 
-    # TODO: projection step
+    # DONE: projection step
     u_kp1 = project(descent_step)
 
     # print information
     if iter % check == 0:
         ## show current result
-        # TODO: display current result after each 'check' iteration
+        # DONE: display current result after each 'check' iteration
         # DONE: Create 'img_u' by reshaping u_kp1 appropriately
         img_u = np.reshape(u_kp1, img_2d_shape)
 
@@ -127,12 +129,11 @@ for iter in np.arange(0, maxiter):
         ax2.imshow(img_u)
         ax3.imshow(col_img)
 
-        # TODO: add titles and make plots nicer (add color bar if required)
+        # DONE: add titles and make plots nicer (add color bar if required)
         ax1.set_title("Cost value per iteration")
-        ax2.set_title("Weighted image") # TODO: Is this a reasonable name?
+        ax2.set_title("Weighted image")  # TODO: Is this a reasonable name?
         # TODO: colorbar for ax2?
         ax3.set_title("Segmented image")
-
 
         plt.pause(0.01)  # to visualize the changes
         # plt.pause(10)  # to visualize the changes
@@ -152,9 +153,9 @@ col_img = create_col_img(img_u)
 # segmentation (col_img)'; You may set the weight for 'col_img' to 0.45.
 
 col_mult = 0.45
-og_img_mult = 1-col_mult
-overlay = og_img_mult*img + col_mult*col_img
-overlay = overlay/np.max(overlay)
+og_img_mult = 1 - col_mult
+overlay = og_img_mult * img + col_mult * col_img
+overlay = overlay / np.max(overlay)
 
 plt.figure(2)
 ax4 = plt.subplot(131)
@@ -168,7 +169,7 @@ ax6.imshow(overlay)
 
 # DONE: add titles and make plots nicer (add color bar if required)
 ax4.set_title("Cost value per iteration")
-ax5.set_title("Weighted image") # TODO: Is this a reasonable name?
+ax5.set_title("Weighted image")  # TODO: Is this a reasonable name?
 # TODO: colorbar for ax2?
 ax6.set_title("Overlay image")
 
@@ -181,7 +182,7 @@ plt.imsave("output/segmentation.png", col_img)
 # DONE: save the variable 'overlay' to 'overlay.png'
 plt.imsave("output/overlay.png", overlay)
 
-# TODO: Consider following naive thresholding based segmentation.
+# DONE: Consider following naive thresholding based segmentation.
 # Pixels with negative values in img_c  are set to class 0
 # Pixels with positive values in img_c  are set to class 1
 
@@ -191,8 +192,16 @@ plt.imsave("output/overlay.png", overlay)
 
 # Start naive thresholding implementation
 naive_img = np.zeros((ny, nx, 3))  # visualizes the naive segmentation
+img_c = np.reshape(c, img_2d_shape)
+naive_img[img_c < 0, 2] = 1
+naive_img[img_c >= 0, 0] = 1
 
-# TODO: Save the segmentation obtained to the variable 'naive_img'
+# DONE: Save the segmentation obtained to the variable 'naive_img'
+plt.figure(3)
+plt.imshow(naive_img)
+plt.title("Naive segmentation")
+plt.show()
 
 
-# TODO: save the variable 'naive_img' to 'naive_img.png'
+# DONE: save the variable 'naive_img' to 'naive_img.png'
+plt.imsave("output/naive_img.png", naive_img)
