@@ -32,16 +32,16 @@ def objective_value(x):
 
 def gradient_of_objective(x):
     # DONE: Calculate the gradient of the smooth part of the objective
-    return (A*x-b)*A
+    return (A * x - b) * A
 
 
 def linear_minimization_oracle(x, a):
-    # DONE: Linear minimization problem over the constraint set
+    # TODO: Linear minimization problem over the constraint set
     # argmin_{x in C} (<x,a>) for some a
     # and C is the constraint set given in the question
     # return argmin here
-    x = -1 * np.sign(a)
-    return x
+    dot_prod = x.dot(a)
+    return np.argmin(dot_prod)
 
 
 # Conditional Gradient Method
@@ -59,16 +59,16 @@ time_vals = [1e-2]  # adding 1e-2 just to give a starting time
 start_time = time.time()
 
 for iter in range(max_iter):
-    # DONE: Complete Conditional Gradient Descent iteration and save the objective value into obj_vals after the update
-    y_k = linear_minimization_oracle(None, A)
+    # TODO: Complete Conditional Gradient Descent iteration and save the objective value into obj_vals after the update
+    y_k = linear_minimization_oracle(x_k, gradient_of_objective(x_k))  # TODO: Check how the algorithm works
     gamma_k = 2 / (iter + 2)
     x_k = y_k * gamma_k + (1 - gamma_k) * x_k
-    obj_vals.append(objective_value(x_k))
 
+    obj_vals.append(objective_value(x_k))
     # DONE: Also track time in each iteration and store the time take per iteration into time_vals
     time_vals.append(time.time() - start_time)
 
-    print("Conditional Gradient Descent iteration: {}/{}".format(iter, max_iter))
+    print("Conditional Gradient Descent iteration: {}/{}".format(iter + 1, max_iter))
 
 
 # Projected Gradient Method
@@ -104,7 +104,7 @@ for iter in range(max_iter):
     # DONE: Also track time in each iteration and store the time take per iteration into time_vals_1
     time_vals_1.append(time.time() - start_time)
 
-    print("Projected Gradient Descent iteration: {}/{}".format(iter, max_iter))
+    print("Projected Gradient Descent iteration: {}/{}".format(iter + 1, max_iter))
 
 fig1 = plt.figure()
 
@@ -123,10 +123,8 @@ ax.set_ylabel("Objective values")
 
 plt.legend(loc="upper left")
 
-
 # DONE: Save figure with file name 'objective_vs_iterations.png'
 fig1.savefig("objective_vs_iterations.png")
-
 
 fig2 = plt.figure()
 
@@ -137,13 +135,12 @@ plt.plot(time_vals_1, label="PGM")
 # DONE: Use appropriate labels and legend
 ax = plt.gca()
 ax.set_xlabel("Iterations")
-ax.set_ylabel("Total time taken")
+ax.set_ylabel("Total time taken (s)")
 
 plt.legend(loc="upper left")
 
 # DONE: Save figure with file name 'time_vs_iterations.png'
 fig2.savefig("time_vs_iterations.png")
-
 
 fig3 = plt.figure()
 
@@ -153,7 +150,7 @@ plt.loglog(time_vals_1, obj_vals_1, label="PGM")
 
 # DONE: Use appropriate labels and legend
 ax = plt.gca()
-ax.set_xlabel("Total time taken")
+ax.set_xlabel("Total time taken (s)")
 ax.set_ylabel("Objective values")
 
 plt.legend(loc="upper left")
