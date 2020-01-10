@@ -16,11 +16,17 @@ b = np.random.rand(M)
 
 
 def constraint_indicator_func(x):
-    ...  # TODO: Construct a indicator function which returns True if x belongs to constraint set else False
+    """ The constraint per the assignment seems to be abs(x_i) <= 1"""
+    # DONE: Construct a indicator function which returns True if x belongs to constraint set else False
+    return abs(x) <= 1
 
 
 def objective_value(x):
-    ...  # TODO: Calculated objective value if x belongs to constraint set else set to infinity
+    # DONE: Calculated objective value if x belongs to constraint set else set to infinity
+    x_filter = x.copy()
+    x_filter[not constraint_indicator_func(x_filter)] = np.inf
+    norm_param = A * x_filter - b
+    return (1 / 2) * (np.linalg.norm(norm_param, ord=2) ** 2)
 
 
 def gradient_of_objective(x):
@@ -28,10 +34,12 @@ def gradient_of_objective(x):
 
 
 def linear_minimization_oracle(x, a):
-    ...  # TODO: Linear minimization problem over the constraint set
+    # DONE: Linear minimization problem over the constraint set
     # argmin_{x in C} (<x,a>) for some a
     # and C is the constraint set given in the question
     # return argmin here
+    x = -1*np.sign(a)
+    return x
 
 
 # Conditional Gradient Method
