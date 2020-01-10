@@ -18,15 +18,16 @@ b = np.random.rand(M)
 def constraint_indicator_func(x):
     """ The constraint per the assignment seems to be abs(x_i) <= 1"""
     # DONE: Construct a indicator function which returns True if x belongs to constraint set else False
-    return np.abs(x) <= 1
+    return np.all(np.abs(x) <= 1)
 
 
 def objective_value(x):
     # DONE: Calculated objective value if x belongs to constraint set else set to infinity
-    x_filter = x.copy()
-    x_filter[not constraint_indicator_func(x_filter)] = np.inf
-    norm_param = A * x_filter - b
-    return (1 / 2) * (np.linalg.norm(norm_param, ord=2) ** 2)
+    retval = np.inf
+    if constraint_indicator_func(x):
+        norm_param = A * x - b
+        retval = (1 / 2) * np.power(norm_param, 2)
+    return retval
 
 
 def gradient_of_objective(x):
@@ -49,6 +50,9 @@ x_init = np.random.rand(N)
 # do not change this
 max_iter = 1000
 
+
+max_iter = 10
+
 x_k = x_init.copy()
 
 # Taping Objective Values and Time
@@ -66,6 +70,8 @@ for iter in range(max_iter):
 
     # DONE: Also track time in each iteration and store the time take per iteration into time_vals
     time_vals.append(time.time() - start_time)
+
+    print("Conditional Gradient Descent iteration: {}/{}".format(iter, max_iter))
 
 
 # Projected Gradient Method
@@ -100,6 +106,8 @@ for iter in range(max_iter):
 
     # DONE: Also track time in each iteration and store the time take per iteration into time_vals_1
     time_vals_1.append(time.time() - start_time)
+
+    print("Projected Gradient Descent iteration: {}/{}".format(iter, max_iter))
 
 fig1 = plt.figure()
 
