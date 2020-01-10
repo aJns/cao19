@@ -18,7 +18,7 @@ b = np.random.rand(M)
 def constraint_indicator_func(x):
     """ The constraint per the assignment seems to be abs(x_i) <= 1"""
     # DONE: Construct a indicator function which returns True if x belongs to constraint set else False
-    return abs(x) <= 1
+    return np.abs(x) <= 1
 
 
 def objective_value(x):
@@ -30,7 +30,8 @@ def objective_value(x):
 
 
 def gradient_of_objective(x):
-    ...  # TODO: Calculate the gradient of the smooth part of the objective
+    # DONE: Calculate the gradient of the smooth part of the objective
+    return (A*x-b)*A
 
 
 def linear_minimization_oracle(x, a):
@@ -38,7 +39,7 @@ def linear_minimization_oracle(x, a):
     # argmin_{x in C} (<x,a>) for some a
     # and C is the constraint set given in the question
     # return argmin here
-    x = -1*np.sign(a)
+    x = -1 * np.sign(a)
     return x
 
 
@@ -54,15 +55,27 @@ x_k = x_init.copy()
 obj_vals = [objective_value(x_k)]
 time_vals = [1e-2]  # adding 1e-2 just to give a starting time
 
+start_time = time.time()
+
 for iter in range(max_iter):
-    ...  # TODO: Complete Conditional Gradient Descent iteration and save the objective value into obj_vals after the update
-    # TODO: Also track time in each iteration and store the time take per iteration into time_vals
+    # DONE: Complete Conditional Gradient Descent iteration and save the objective value into obj_vals after the update
+    y_k = linear_minimization_oracle(None, A)
+    gamma_k = 2 / (iter + 2)
+    x_k = y_k * gamma_k + (1 - gamma_k) * x_k
+    obj_vals.append(objective_value(x_k))
+
+    # DONE: Also track time in each iteration and store the time take per iteration into time_vals
+    time_vals.append(time.time() - start_time)
 
 
 # Projected Gradient Method
 
 def projection(x):
-    ...  # TODO: Calculate the projection onto the constraint set
+    """Since we're dealing with a simple |x_i| for i=1..N, we can just clip all elements outside our constraint"""
+    # DONE: Calculate the projection onto the constraint set
+    x[x > 1] = 1
+    x[x < -1] = -1
+    return x
 
 
 x_k_1 = x_init.copy()
@@ -71,15 +84,22 @@ x_k_1 = x_init.copy()
 obj_vals_1 = [objective_value(x_k_1)]
 time_vals_1 = [1e-2]
 
-# TODO: Calculate the Lipschitz constant and save into Lips_val
-Lips_val = ...
+# DONE: Calculate the Lipschitz constant and save into Lips_val
+Lips_val = np.abs(A * A)  # Absolute of the derivative of the gradient of h(x); Should be the maximum rate of change
 
 # do not change this
 tau = (2 / (Lips_val)) * 0.9
 
+start_time = time.time()
+
 for iter in range(max_iter):
-    ...  # TODO: Complete Projected Gradient Descent iteration and save the objective value into obj_vals_1 after the update
-    # TODO: Also track time in each iteration and store the time take per iteration into time_vals_1
+    # DONE: Complete Projected Gradient Descent iteration and save the objective value into obj_vals_1 after the update
+    to_project = x_k_1 - tau * gradient_of_objective(x_k_1)
+    x_k_1 = projection(to_project)
+    obj_vals_1.append(objective_value(x_k_1))
+
+    # DONE: Also track time in each iteration and store the time take per iteration into time_vals_1
+    time_vals_1.append(time.time() - start_time)
 
 fig1 = plt.figure()
 
