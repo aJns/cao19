@@ -26,7 +26,7 @@ def objective_value(x):
     retval = np.inf
     if constraint_indicator_func(x):
         norm_param = A * x - b
-        retval = (1 / 2) * np.power(norm_param, 2)
+        retval = (1 / 2) * np.sum(np.power(norm_param, 2))
     return retval
 
 
@@ -115,26 +115,53 @@ fig1 = plt.figure()
 # and PGM for Proximal Gradient Method 
 # (here PGM is equivalent to Projected Gradient Descent)
 
-# TODO: plot log plot of objective values of CGM and PGM with respect to iterations
+# DONE: plot log log plot of objective values of CGM and PGM with respect to iterations
+plt.loglog(obj_vals, label="CGM")
+plt.loglog(obj_vals_1, label="PGM")
 
-# TODO: Use appropriate labels and legend
+# DONE: Use appropriate labels and legend
+ax = plt.gca()
+ax.set_xlabel("Iterations")
+ax.set_ylabel("Objective values")
 
-# TODO: Save figure with file name 'objective_vs_iterations.png'
+plt.legend(loc="upper left")
+
+
+# DONE: Save figure with file name 'objective_vs_iterations.png'
+fig1.savefig("objective_vs_iterations.png")
 
 
 fig2 = plt.figure()
 
-# TODO: plot cumulative sum of time values of CGM and PGM with respect to iterations
+# DONE: plot cumulative sum of time values of CGM and PGM with respect to iterations
+plt.plot(time_vals, label="CGM")
+plt.plot(time_vals_1, label="PGM")
 
-# TODO: Use appropriate labels and legend
+# DONE: Use appropriate labels and legend
+ax = plt.gca()
+ax.set_xlabel("Iterations")
+ax.set_ylabel("Total time taken")
 
-# TODO: Save figure with file name 'time_vs_iterations.png'
+plt.legend(loc="upper left")
+
+# DONE: Save figure with file name 'time_vs_iterations.png'
+fig2.savefig("time_vs_iterations.png")
 
 
 fig3 = plt.figure()
 
-# TODO: plot log log plot of objective values of CGM and PGM with respect to cumulative sum of time values
+# DONE: plot log log plot of objective values of CGM and PGM with respect to cumulative sum of time values
+plt.loglog(time_vals, obj_vals, label="CGM")
+plt.loglog(time_vals_1, obj_vals_1, label="PGM")
 
-# TODO: Use appropriate labels and legend
+# DONE: Use appropriate labels and legend
+ax = plt.gca()
+ax.set_xlabel("Total time taken")
+ax.set_ylabel("Objective values")
 
-# TODO: Save figure with file name 'objective_vs_time.png'
+plt.legend(loc="upper left")
+
+# DONE: Save figure with file name 'objective_vs_time.png'
+fig3.savefig("objective_vs_time.png")
+
+plt.show()
