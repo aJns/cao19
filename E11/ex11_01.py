@@ -50,9 +50,6 @@ x_init = np.random.rand(N)
 # do not change this
 max_iter = 1000
 
-
-max_iter = 10
-
 x_k = x_init.copy()
 
 # Taping Objective Values and Time
