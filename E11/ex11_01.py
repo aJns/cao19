@@ -25,23 +25,25 @@ def objective_value(x):
     # DONE: Calculated objective value if x belongs to constraint set else set to infinity
     retval = np.inf
     if constraint_indicator_func(x):
-        norm_param = A * x - b
+        norm_param = A @ x - b
         retval = (1 / 2) * np.sum(np.power(norm_param, 2))
     return retval
 
 
 def gradient_of_objective(x):
     # DONE: Calculate the gradient of the smooth part of the objective
-    return (A * x - b) * A
+    return (A @ x - b) @ A
 
 
 def linear_minimization_oracle(x, a):
-    # TODO: Linear minimization problem over the constraint set
+    # DONE: Linear minimization problem over the constraint set
     # argmin_{x in C} (<x,a>) for some a
     # and C is the constraint set given in the question
     # return argmin here
-    dot_prod = x.dot(a)
-    return np.argmin(dot_prod)
+    idx = np.argmax(np.abs(x))
+    lmo = np.zeros(N)
+    lmo[idx] = -1*np.sign(x[idx])
+    return lmo
 
 
 # Conditional Gradient Method
@@ -59,8 +61,9 @@ time_vals = [1e-2]  # adding 1e-2 just to give a starting time
 start_time = time.time()
 
 for iter in range(max_iter):
-    # TODO: Complete Conditional Gradient Descent iteration and save the objective value into obj_vals after the update
-    y_k = linear_minimization_oracle(x_k, gradient_of_objective(x_k))  # TODO: Check how the algorithm works
+    # DONE: Complete Conditional Gradient Descent iteration and save the objective value into obj_vals after the update
+    grad = gradient_of_objective(x_k)
+    y_k = linear_minimization_oracle(grad, None)
     gamma_k = 2 / (iter + 2)
     x_k = y_k * gamma_k + (1 - gamma_k) * x_k
 
@@ -88,7 +91,7 @@ obj_vals_1 = [objective_value(x_k_1)]
 time_vals_1 = [1e-2]
 
 # DONE: Calculate the Lipschitz constant and save into Lips_val
-Lips_val = np.abs(A * A)  # Absolute of the derivative of the gradient of h(x); Should be the maximum rate of change
+Lips_val = np.max(np.abs(A @ A))  # Absolute of the derivative of the gradient of h(x); Should be the maximum rate of change
 
 # do not change this
 tau = (2 / (Lips_val)) * 0.9
@@ -97,7 +100,8 @@ start_time = time.time()
 
 for iter in range(max_iter):
     # DONE: Complete Projected Gradient Descent iteration and save the objective value into obj_vals_1 after the update
-    to_project = x_k_1 - tau * gradient_of_objective(x_k_1)
+    grad = gradient_of_objective(x_k_1)
+    to_project = x_k_1 - tau * grad
     x_k_1 = projection(to_project)
     obj_vals_1.append(objective_value(x_k_1))
 
