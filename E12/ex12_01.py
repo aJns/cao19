@@ -58,8 +58,10 @@ tau = 10
 sigma = 0.9/(L*L*tau)   
 # You are free to explore your own choice for tau and sigma
 
+def objective_val(x):
+    return c.dot(x) + np.linalg.norm(K @ u, ord=1)
 
-initial_objective = # TODO: Calculate the objective at the starting point
+initial_objective = objective_val(x)    # DONE: Calculate the objective at the starting point
 objective_vals = [initial_objective]
 
 
@@ -73,10 +75,12 @@ for iter in np.arange(0, maxiter):
     # Clearly distinguish the primal update and the dual update
     
 
-    # TODO: Compute Objective value at x and add it to 'objective_vals' list
+    # DONE: Compute Objective value at x and add it to 'objective_vals' list
+    val = objective_val(x)
+    objective_vals.append(val)
 
     # print information
-    if (iter % check == 0):
+    if iter % check == 0:
         ## -- Same as Exercise 4 of Sheet 10 -- FROM HERE
         ## show current result
         # TODO: display current result after each 'check' iteration
